@@ -1,0 +1,39 @@
+#!/bin/bash
+# hard links: sshlogin, sshkeygen
+# mcedit TAB: 4 with spaces
+
+### BEGIN HEADER
+name=$(basename ${0})
+spname="__SP_${name}"
+default_kickstart="${HOME}/shellpack/lib/kickstart"
+if test -z "${SHELLPACK_KICKSTART}" ; then
+  if test -r "${default_kickstart}" ; then
+    SHELLPACK_KICKSTART="${default_kickstart}"
+  else
+    errmsg "No Kickstart"
+    exit 10
+  fi
+fi
+# read kickstart
+. ${SHELLPACK_KICKSTART}
+# load libraries
+uselib ssh
+### END HEADER
+
+
+### BEGIN MAIN
+force=false
+host=${1}
+while getopts f o; do
+  case "$o" in
+    f) force=true; host=${2};
+  esac
+done
+
+if test "${host}" = "" ; then
+  errmsg "Empty machine name"
+  exit 11
+fi
+
+${spname} ${host} ${force}
+### END MAIN

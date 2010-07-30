@@ -1,0 +1,62 @@
+#!/bin/bash
+# mcedit TAB: 4 with spaces
+
+### BEGIN HEADER
+name=$(basename ${0})
+spname="__SP_${name}"
+default_kickstart="${HOME}/shellpack/lib/kickstart"
+if test -z "${SHELLPACK_KICKSTART}" ; then
+  if test -r "${default_kickstart}" ; then
+    SHELLPACK_KICKSTART="${default_kickstart}"
+  else
+    errmsg "No Kickstart"
+    exit 10
+  fi
+fi
+# read kickstart
+. ${SHELLPACK_KICKSTART}
+# load libraries
+uselib ssh
+### END HEADER
+
+
+
+### BEGIN MAIN
+force=false
+host=${1}
+while getopts lf: o
+do
+  case "$o" in
+	f)	force=true; host=${2};;
+	l)	echo -ne "\nSSHFS mounted volumes\n";
+	    echo -ne "------------------------------------------------------------------------\n";
+	    if test -z "${OSTYPE#darwin}"; then
+		  mount | grep sshfs | awk '{printf "%-32s => %s\n",$3,$1}'
+		else
+		  mount | grep fusefs | awk '{printf "%-32s => %s\n",$3,$1}'
+	    fi
+	    echo
+	    exit 2
+	;;
+  esac
+done
+
+if test "${host}" = ""; then
+  echo "Usage: ${name} [-f|-l] [host]"
+  exit 1
+fi
+
+lock="${host}.mount.${shellpack_lckext}"
+
+if $force ; then
+  ${spname} ${host}
+  exit $?
+fi
+
+if create_lock ${lock} ; then
+  ${spname} ${host}
+  exit $?
+fi
+
+echo "${host} is locked -f to force against the lock"
+exit 11

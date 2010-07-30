@@ -1,0 +1,211 @@
+#!/bin/bash
+# __SP_application: functions (kickstart)
+# __SP_version: 1
+# __SP_runtime: bash
+# __SP_api_version: 2
+#
+
+# library array for loaded libs
+uselib=()
+
+
+function errmsg() {
+  name=$(basename $0)
+  echo -e "${name}: Error ($*)" >&2
+}
+
+
+function warnmsg() {
+  name=$(basename $0)
+  echo -e "${name}: Warning ($*)" >&2
+}
+
+
+#
+# Library
+#
+function uselib() {
+  # loads a library from ${shellpack_lib}
+  if test -z "${1}" ; then
+    errmsg "Empty library";
+    return 1
+  fi
+    
+  lib="${1}.${shellpack_libext}"
+  libpath="${shellpack_lib}/${lib}"    
+
+  # check path
+  if ! test -r "${libpath}" ; then
+    errmsg "No ${lib} in ${shellpack_lib}";
+    return 2
+  fi
+  
+  # check loaded libs
+  for ul in ${uselib} ; do
+    if test "${ul}" = "${lib}" ; then
+      errmsg "${lib} is already loaded"
+      exit 3
+    fi
+  done
+
+  # check api version
+  libapiv=`cat ${libpath} | grep ${shellpack_lib_preid}"api_version" | awk '{split($0,arr,":");gsub("\\\W+","",arr[2]);print arr[2]}'`
+  libapiv=${libapiv// /}
+  shellpack_api_version=${shellpack_api_version// /}
+  if test "${libapiv}" != "${shellpack_api_version}" ; then
+	errmsg "API Version mismatch for ${lib} L:${libapiv} SP:${shellpack_api_version}"
+	exit 4
+  fi
+
+  # load the library config
+  libconf="${shellpack_cfg}/${lib}.${OSTYPE}.cfg"
+	  
+  if test -r ${libconf} ; then
+	. ${libconf}
+  else
+	libconf="${shellpack_cfg}/${lib}.cfg"
+	if ! test -r ${libconf} ; then
+	  errmsg "No library config for ${lib}"
+	  exit 3
+	fi
+	. ${libconf}
+  fi
+
+  # load the library
+  . ${libpath}
+  uln=${#uselib[@]}
+  uselib[${uln}]="${lib}"
+  return 0
+} # end uselib
+
+
+
+
+#
+# Locks
+#
+
+# if is_lock LOCK ; then
+#   this part runs when there is LOCK
+# fi
+function is_lock() {
+  if test -z "${1}" ; then
+    errmsg "Empty lock name"
+	return 1
+  fi
+
+  lock="${1}"
+  lockfile="${shellpack_lock}/${lock}"
+  if test -w ${lockfile} ; then
+    # echo "lock exists: ${lock}"
+	return 0
+  fi
+  # echo "no lock: ${lock}"
+  return 2
+} # end is_lock
+
+
+
+# if create_lock LOCK ; then
+#   this part runs when LOCK is created
+# fi
+function create_lock() {
+  if test -z "${1}" ; then
+    errmsg "Empty lock name"
+	return 1
+  fi
+
+  lock="${1}"
+  lockfile="${shellpack_lock}/${lock}"
+  if is_lock "${lock}" ; then
+    # echo "lock exists: ${lock}"
+	return 2
+  fi
+
+  now=`date +"%Y-%m-%d[%H:%M:%S]"`
+  echo "LOCK=\"${lock}\""  > "${lockfile}"
+  echo "DATE=\"${now}\""  >> "${lockfile}"
+  # echo "lock created: ${lock}"
+  return 0
+} # end create_lock
+
+
+
+# if print_into_lock LOCK MSG ; then
+#   this part runs when MSG is written to LOCK
+# fi
+function print_into_lock() {
+  if test -z "${1}" || test -z "${2}" ; then
+    errmsg "Empty lock name or message"
+	return 1
+  fi
+
+  lock="${1}"
+  lockfile="${shellpack_lock}/${lock}"
+  msg="${2}"
+  
+  if is_lock "${lock}" ; then
+    # echo "lock print"
+	echo "${msg}" >> ${lockfile}
+	return 0
+  fi
+
+  return 2
+} # end print_into_lock
+
+
+
+# if delete_lock LOCK ; then
+#   this part runs when LOCK is deleted
+# fi
+function delete_lock() {
+  if test -z "${1}" ; then
+    errmsg "Empty lock name"
+	return 1
+  fi
+
+  lock="${1}"
+  lockfile="${shellpack_lock}/${lock}"
+
+  if is_lock "${lock}" ; then
+	rm -f "${lockfile}"
+	return $?
+  fi
+
+  return 2
+} # end delete_lock
+
+
+
+#
+# Directories
+#
+function create_directory() {
+  if test -z "${1}" ; then
+    errmsg "Empty directory name"
+	return 1
+  fi
+
+  directory="${1}"
+  if ! test -d ${directory} ; then
+    mkdir -p ${directory}
+	return $?
+  fi
+  return 1
+}
+
+
+#
+# Links
+#
+function create_symlink() {
+  if test -z "${1}" || test -z "${2}" ; then
+    errmsg "Empty source or destination"
+	return 1
+  fi
+
+  source="${1}"
+  destination="${2}"
+  ln -s "${source}" "${destination}"
+  return $?
+}

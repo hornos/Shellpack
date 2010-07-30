@@ -1,0 +1,35 @@
+# fqdn of the remote machine
+FQDN="f.q.d.n"
+
+# machine id
+MID="template"
+
+# remote username
+SSH_USER="${USER}"
+
+# a common ssh port
+SSH_PORT=22
+
+# options for ssh logins
+SSH_OPT="-XC -p ${SSH_PORT}"
+
+# options for scp operations
+SCP_OPT="-P ${SSH_PORT}"
+
+# remote destination directory for scp
+SCP_REMOTE="/home/${SSH_USER}"
+
+# local destination for pop
+SCP_LOCAL="${HOME}/pop/${MID}"
+
+# if not null then create a proxy tunnel
+SSH_PROXY="-L 63128:localhost:3128"
+
+# sshmount remote directory
+SSHFS_REMOTE="/"
+
+# local directory where the above remote dir is mounted
+SSHFS_LOCAL="${HOME}/remote/${MID}"
+
+# sshmount options
+SSHFS_OPT="-C -o rw -o follow_symlinks -o Port=${SSH_PORT}"
