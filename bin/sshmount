@@ -9,7 +9,7 @@ if test -z "${SHELLPACK_KICKSTART}" ; then
   if test -r "${default_kickstart}" ; then
     SHELLPACK_KICKSTART="${default_kickstart}"
   else
-    errmsg "No Kickstart"
+    echo "kickstart error"
     exit 10
   fi
 fi

@@ -5,19 +5,18 @@
 # __SP_api_version: 2
 #
 
-if test -z "${SHELLPACK_HOME}" ; then
-  export SHELLPACK_HOME="${HOME}/shellpack"
-fi
+shellpack_home=`dirname ${SHELLPACK_KICKSTART}`
+shellpack_home=${shellpack_home%%/lib}
 
 shellpack_user_home="${HOME}/shellpack"
-shellpack_home=${SHELLPACK_HOME:-${shellpack_user_home}}
+shellpack_home=${SHELLPACK_HOME:-${shellpack_home}}
 shellpack_lib="${shellpack_home}/lib"
 shellpack_cfg="${shellpack_home}/cfg"
 
 shellpack_api_version="2"
 shellpack_lib_preid="__SP_"
 
-# set defaults
+# set defaults ------------------------------------------------------------------
 shellpack_hosts="${shellpack_user_home}/hosts"
 shellpack_queues="${shellpack_user_home}/queues"
 shellpack_lock="${shellpack_user_home}/lock"
@@ -27,16 +26,14 @@ shellpack_libext="lib"
 shellpack_lckext="lck"
 shellpack_sshkeyext="sshkey"
 
+# common functions --------------------------------------------------------------
+shellpack_functions="${shellpack_lib}/functions"
+if ! test -r ${shellpack_functions} ; then
+  echo "functions error"
+  exit 10
+fi
+. ${shellpack_functions}
 
-# read generak function definitions
-. ${shellpack_lib}/functions
-
-# create lock dir
+# create directories ------------------------------------------------------------
 create_directory "${shellpack_lock}"
-
 create_directory "${shellpack_keys}"
-
-#if ! test -d ${shellpack_lock} ; then
-#  mkdir -p ${shellpack_lock}
-#fi
-
