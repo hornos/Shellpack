@@ -10,8 +10,11 @@ SSH_USER="${USER}"
 # a common ssh port
 SSH_PORT=22
 
+# common ssh options
+SSH_COMMON_OPT="-o TCPKeepAlive=no -o ServerAliveInterval=30"
+
 # options for ssh logins
-SSH_OPT="-XC -p ${SSH_PORT}"
+SSH_OPT="-XC -p ${SSH_PORT} ${SSH_COMMON_OPT}"
 
 # options for scp operations
 SCP_OPT="-P ${SSH_PORT}"
@@ -32,4 +35,4 @@ SSHFS_REMOTE="/"
 SSHFS_LOCAL="${HOME}/remote/${MID}"
 
 # sshmount options
-SSHFS_OPT="-C -o rw -o follow_symlinks -o Port=${SSH_PORT}"
+SSHFS_OPT="-C -o rw -o follow_symlinks -o Port=${SSH_PORT} ${SSH_COMMON_OPT}"
