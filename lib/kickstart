@@ -22,7 +22,7 @@ shellpack_queues="${shellpack_user_home}/queues"
 shellpack_lock="${shellpack_user_home}/lock"
 shellpack_keys="${shellpack_user_home}/keys"
 
-shellpack_libext="lib"
+shellpack_libext="lib.sh"
 shellpack_lckext="lck"
 shellpack_sshkeyext="sshkey"
 
