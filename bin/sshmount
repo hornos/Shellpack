@@ -2,7 +2,7 @@
 # mcedit TAB: 4 with spaces
 
 ### BEGIN HEADER
-. $(dirname ${0})/.__header
+. $(dirname ${0})/../lib/header
 # load libraries
 uselib ssh
 ### END HEADER
@@ -15,17 +15,17 @@ host=${1}
 while getopts lf: o
 do
   case "$o" in
-	f)	force=true; host=${2};;
-	l)	echo -ne "\nSSHFS mounted volumes\n";
-	    echo -ne "------------------------------------------------------------------------\n";
-	    if test -z "${OSTYPE#darwin}"; then
-		  mount | grep sshfs | awk '{printf "%-32s => %s\n",$3,$1}'
-		else
-		  mount | grep fusefs | awk '{printf "%-32s => %s\n",$3,$1}'
-	    fi
-	    echo
-	    exit 2
-	;;
+    f)  force=true; host=${2};;
+    l)  echo -ne "\nSSHFS mounted volumes\n";
+        echo -ne "------------------------------------------------------------------------\n";
+        if test -z "${OSTYPE#darwin}"; then
+          mount | grep sshfs | awk '{printf "%-32s => %s\n",$3,$1}'
+        else
+          mount | grep fusefs | awk '{printf "%-32s => %s\n",$3,$1}'
+        fi
+        echo
+        exit 2
+    ;;
   esac
 done
 

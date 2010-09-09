@@ -2,7 +2,7 @@
 # mcedit TAB: 4 with spaces
 
 ### BEGIN HEADER
-. $(dirname ${0})/.__header
+. $(dirname ${0})/../lib/header
 # load libraries
 uselib ssh
 ### END HEADER

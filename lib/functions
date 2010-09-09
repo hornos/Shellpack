@@ -47,7 +47,7 @@ function uselib() {
   done
 
   # check api version
-  libapiv=`cat ${libpath} | 
+  libapiv=`head -5 ${libpath} | 
            grep ${shellpack_lib_preid}"api_version" | 
            awk '{split($0,arr,":");gsub("\\\W+","",arr[2]);print arr[2]}'`
   libapiv=${libapiv// /}
