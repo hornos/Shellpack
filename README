@@ -7,15 +7,14 @@
 
 Shellpack is a script library to help everyday work.
 
-core  : core functionality
-        kickstart, functions
+core  : core
 
 ssh   : ssh login, scp, fuse sshfs mount
-        ssh.lib
+
+run   : vasp
+
 
 TODO:
-run   : vasp, siesta, espresso wrappers
-        run.lib, run.x.lib
+run   : siesta, espresso
 
-queue : PBE, SGE, SLURM wrappers
-        queue.lib, queue.x.lib
+queue : PBE, SGE, SLURM

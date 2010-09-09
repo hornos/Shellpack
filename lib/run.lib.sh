@@ -11,7 +11,7 @@ function __cpunzmv() {
  local dst="${3}"
  
  local fname=""
- fname=`basename ${src}`
+ fname=$(basename ${src})
  local noext=${fname%%${csuffix}}
 
  cp "${src}" "${dir}"
@@ -24,7 +24,7 @@ function __cpunzmv() {
    ${uncompress} "${dir}/${fname}"
  fi
 
- if ! test -z "${dst}" ; then
+ if ! test -z "${dst}" && ! test -f "${dir}/${dst}" ; then
    mv "${dir}/${noext}" "${dir}/${dst}"
    if test $? -gt 0 ; then
      errmsg "file ${dir}/${noext} can't be renamed"
@@ -104,7 +104,15 @@ function __save() {
 
 function __collect() {
   local input=""
-  input=`__runinp ${MAININPUT}`
+  local ispna=${1:-true}
+  local suffix="${2}"
+
+  if ${ispna} ; then
+    input=$(__runinp ${MAININPUT})
+    input=${input%%${suffix}}
+  else
+    input=""
+  fi
 
   cd "${WORKDIR}"
 
@@ -127,6 +135,12 @@ function __SP_runprg() {
   # options ---------------------------------------------------------------------
   local prg=${1:-vasp}
   local guide=${2:-vasp.guide}
+
+  echo
+  echo "Shellpack: $prg"
+
+  # load program library --------------------------------------------------------
+  uselib run.${prg}
 
   # read guide ------------------------------------------------------------------
   if ! test -f "${guide}" ; then
@@ -160,9 +174,9 @@ function __SP_runprg() {
     return 14
   fi
 
-  WORKDIRLINK=${INPUTDIR}/vasp-${USER}-${HOSTNAME}-${$}
+  WORKDIRLINK=${INPUTDIR}/${prg}-${USER}-${HOSTNAME}-${$}
   local workdir_path=""
-  workdir_path=`readlink ${WORKDIR}`
+  workdir_path=$(readlink ${WORKDIR})
   if test $? -gt 0 ; then
     workdir_path="${WORKDIR}"
   fi
@@ -173,11 +187,17 @@ function __SP_runprg() {
     warnmsg "link $workdir_path can't be created"
   fi
 
-  # load program library --------------------------------------------------------
-  uselib run.${prg}
 
   # preapre ---------------------------------------------------------------------
   __SP_${prg}_prepare
+  local ret=$?
+  if test $ret -gt 0 ; then
+    if test "${ONERR}" = "clean" ; then
+      __cleanup
+    fi
+    errmsg "program ${prg} prepare exited with error code $ret"
+    return $ret
+  fi
 
   # run program -----------------------------------------------------------------
   cd "${WORKDIR}"
@@ -201,14 +221,15 @@ function __SP_runprg() {
   echo "Running ${program}"
 
   __isrdrc ${MAININPUT}
+  ret=$?
   local input=""
-  input=`__runinp ${MAININPUT}`
-  if test $? -gt 0 ; then
+  input=$(__runinp ${MAININPUT})
+  if test $ret -gt 0 ; then
     ${program} < ${input} >& ${output}
   else
     ${program} >& ${output}
   fi
-  local ret=$?
+  ret=$?
 
   echo
   echo "Output files in ${WORKDIR}:"
@@ -218,29 +239,35 @@ function __SP_runprg() {
   if test $ret -gt 0 ; then
     if test "${ONERR}" = "clean" ; then
       __cleanup
-      return $ret
     fi
     errmsg "program ${program} exited with error $ret"
+    return $ret
   fi
 
   __SP_${prg}_finish
+  ret=$?
+  if test $ret -gt 0 ; then
+    if test "${ONERR}" = "clean" ; then
+      __cleanup
+    fi
+    errmsg "program ${prg} finish exited with error code $ret"
+    return $ret
+  fi
 
   # collect ---------------------------------------------------------------------
   echo
   echo "Saved output files:"
   ls ${RESULTS}
 
-  __collect
+  __SP_${prg}_collect
+  ret=$?
   if test $ret -gt 0 ; then
     if test "${ONERR}" = "clean" ; then
       __cleanup
-      return $ret
-    else
-      errmsg "collect exited with error code $ret"
     fi
+    errmsg "program ${prg} collect exited with error code $ret"
+    return $ret
   fi
-
-  __SP_${prg}_collect
 
   __cleanup
 }

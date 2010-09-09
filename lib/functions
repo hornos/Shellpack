@@ -23,10 +23,15 @@ function warnmsg() {
 
 # library loader ----------------------------------------------------------------
 function uselib() {
+  local isex=${2:-true}
   # loads a library from ${shellpack_lib}
   if test -z "${1}" ; then
     errmsg "Empty library";
-    return 1
+    if $isex ; then
+      exit 1
+    else
+      return 1
+    fi
   fi
 
   local lib="${1}.${shellpack_libext}"
@@ -35,14 +40,22 @@ function uselib() {
   # check path
   if ! test -r "${libpath}" ; then
     errmsg "no ${lib} in ${shellpack_lib}";
-    return 2
+    if $isex ; then
+      exit 2
+    else
+      return 2
+    fi
   fi
 
   # check loaded libs
   for ul in ${uselib} ; do
     if test "${ul}" = "${lib}" ; then
       errmsg "${lib} is already loaded"
-      exit 3
+      if $isex ; then
+        exit 3
+      else
+        return 3
+      fi
     fi
   done
 
@@ -54,7 +67,11 @@ function uselib() {
   local shellpack_api_version=${shellpack_api_version// /}
   if test "${libapiv}" != "${shellpack_api_version}" ; then
     errmsg "api ver mismatch for ${lib} L:${libapiv} SP:${shellpack_api_version}"
-    exit 4
+    if $isex ; then
+      exit 4
+    else
+      return 4
+    fi
   fi
 
   # load the library config
@@ -65,7 +82,11 @@ function uselib() {
     libconf="${shellpack_cfg}/${lib}.cfg"
     if ! test -r ${libconf} ; then
       errmsg "no library config for ${lib}"
-      exit 3
+      if $isex ; then
+        exit 5
+      else
+        return 5
+      fi
     fi
     . ${libconf}
   fi

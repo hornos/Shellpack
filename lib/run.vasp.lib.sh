@@ -8,7 +8,7 @@
 
 function __SP_vasp_prepare() {
   local input=""
-  input=`__runinp ${MAININPUT}`
+  input=$(__runinp ${MAININPUT})
   local inpfile=""
 
   # prepare inputs --------------------------------------------------------------
@@ -36,12 +36,14 @@ function __SP_vasp_prepare() {
     return 23
   fi
 
-  inpfile="${INPUTDIR}/${input}${qptssuffix}"
-  if test -f "${inpfile}" ; then
-    __cpunzmv "${inpfile}" "${WORKDIR}" QPOINTS
-  else
-    warnmsg "file ${inpfile} not found"
-    # return 24
+  if test "${GW}" = "on" ; then
+    inpfile="${INPUTDIR}/${input}${qptssuffix}"
+    if test -f "${inpfile}" ; then
+      __cpunzmv "${inpfile}" "${WORKDIR}" QPOINTS
+    else
+      errmsg "file ${inpfile} not found"
+      return 24
+    fi
   fi
 
   # prepare libs ----------------------------------------------------------------
@@ -98,7 +100,7 @@ function __SP_vasp_prepare() {
   for oin in ${OTHERINPUTS}; do
     oinpath="${INPUTDIR}/${oin}"
     if ! test -f "${oinpath}" ; then
-      errmsg "projectorfile ${tmplibpath} not found"
+      errmsg "file ${oinpath} not found"
       return 35
     fi
     oout=${oin##${prefix}.}
@@ -115,6 +117,11 @@ function __SP_vasp_finish() {
 }
 
 function __SP_vasp_collect() {
+  __collect
+  if test $? -gt 0 ; then
+    return $?
+  fi
+
   if test "${NEB}" = "on" ; then
     cd "${WORKDIR}"
 
