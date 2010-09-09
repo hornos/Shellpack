@@ -15,4 +15,4 @@ while getopts p:g: opt; do
   esac
 done
 
-${spname} ${prg} ${guide}
+${spname} "${prg}" "${guide}"
