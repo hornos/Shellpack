@@ -181,7 +181,11 @@ function __SP_runprg() {
 
   # run program -----------------------------------------------------------------
   cd "${WORKDIR}"
-  
+
+  echo
+  echo "Input files in ${WORKDIR}:"
+  ls
+
   local output=${prg}.output
   local program="${PRGBIN}"
 
@@ -193,6 +197,9 @@ function __SP_runprg() {
     program="${program} ${PARAMS}"
   fi
 
+  echo
+  echo "Running ${program}"
+
   __isrdrc ${MAININPUT}
   local input=""
   input=`__runinp ${MAININPUT}`
@@ -202,6 +209,10 @@ function __SP_runprg() {
     ${program} >& ${output}
   fi
   local ret=$?
+
+  echo
+  echo "Output files in ${WORKDIR}:"
+  ls
 
   # check exit status -----------------------------------------------------------
   if test $ret -gt 0 ; then
@@ -215,6 +226,10 @@ function __SP_runprg() {
   __SP_${prg}_finish
 
   # collect ---------------------------------------------------------------------
+  echo
+  echo "Saved output files:"
+  ls ${RESULTS}
+
   __collect
   if test $ret -gt 0 ; then
     if test "${ONERR}" = "clean" ; then
