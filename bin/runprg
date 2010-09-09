@@ -8,10 +8,11 @@ uselib run
 
 prg="vasp"
 guide="vasp.guide"
-while getopts p:g: opt; do
+while getopts hp:g: opt; do
   case "$opt" in
     p) prg=$OPTARG;;
     g) guide=$OPTARG;;
+    h) echo "Usage: $(basename $0) -p program -g guide"; exit 1;;
   esac
 done
 

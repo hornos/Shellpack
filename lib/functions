@@ -6,17 +6,17 @@
 #
 
 # init --------------------------------------------------------------------------
-uselib=()
+USELIB=()
 
 
 # error handling ----------------------------------------------------------------
 function errmsg() {
-  name=$(basename $0)
+  local name=$(basename $0)
   echo -e "${name}: Error ($*)" >&2
 }
 
 function warnmsg() {
-  name=$(basename $0)
+  local name=$(basename $0)
   echo -e "${name}: Warning ($*)" >&2
 }
 
@@ -29,8 +29,8 @@ function uselib() {
     return 1
   fi
 
-  lib="${1}.${shellpack_libext}"
-  libpath="${shellpack_lib}/${lib}"
+  local lib="${1}.${shellpack_libext}"
+  local libpath="${shellpack_lib}/${lib}"
 
   # check path
   if ! test -r "${libpath}" ; then
@@ -47,18 +47,18 @@ function uselib() {
   done
 
   # check api version
-  libapiv=`head -5 ${libpath} | 
+  local libapiv=`head -5 ${libpath} | 
            grep ${shellpack_lib_preid}"api_version" | 
            awk '{split($0,arr,":");gsub("\\\W+","",arr[2]);print arr[2]}'`
   libapiv=${libapiv// /}
-  shellpack_api_version=${shellpack_api_version// /}
+  local shellpack_api_version=${shellpack_api_version// /}
   if test "${libapiv}" != "${shellpack_api_version}" ; then
     errmsg "api ver mismatch for ${lib} L:${libapiv} SP:${shellpack_api_version}"
     exit 4
   fi
 
   # load the library config
-  libconf="${shellpack_cfg}/${lib}.${OSTYPE}.cfg"
+  local libconf="${shellpack_cfg}/${lib}.${OSTYPE}.cfg"
   if test -r ${libconf} ; then
     . ${libconf}
   else
@@ -72,8 +72,8 @@ function uselib() {
 
   # load the library
   . ${libpath}
-  uln=${#uselib[@]}
-  uselib[${uln}]="${lib}"
+  local uln=${#uselib[@]}
+  USELIB[${uln}]="${lib}"
   return 0
 } # end uselib
 
@@ -88,8 +88,8 @@ function is_lock() {
     return 1
   fi
 
-  lock="${1}"
-  lockfile="${shellpack_lock}/${lock}"
+  local lock="${1}"
+  local lockfile="${shellpack_lock}/${lock}"
   if test -w ${lockfile} ; then
     return 0
   fi
@@ -106,13 +106,13 @@ function create_lock() {
     return 1
   fi
 
-  lock="${1}"
-  lockfile="${shellpack_lock}/${lock}"
+  local lock="${1}"
+  local lockfile="${shellpack_lock}/${lock}"
   if is_lock "${lock}" ; then
     return 2
   fi
 
-  now=`date +"%Y-%m-%d[%H:%M:%S]"`
+  local now=`date +"%Y-%m-%d[%H:%M:%S]"`
   echo "LOCK=\"${lock}\""  > "${lockfile}"
   echo "DATE=\"${now}\""  >> "${lockfile}"
   return 0
@@ -128,9 +128,9 @@ function print_into_lock() {
     return 1
   fi
 
-  lock="${1}"
-  lockfile="${shellpack_lock}/${lock}"
-  msg="${2}"
+  local lock="${1}"
+  local lockfile="${shellpack_lock}/${lock}"
+  local msg="${2}"
 
   if is_lock "${lock}" ; then
     echo "${msg}" >> ${lockfile}
@@ -150,8 +150,8 @@ function delete_lock() {
     return 1
   fi
 
-  lock="${1}"
-  lockfile="${shellpack_lock}/${lock}"
+  local lock="${1}"
+  local lockfile="${shellpack_lock}/${lock}"
 
   if is_lock "${lock}" ; then
     rm -f "${lockfile}"
@@ -169,12 +169,35 @@ function create_directory() {
     return 1
   fi
 
-  directory="${1}"
-  if ! test -d ${directory} ; then
-    mkdir -p ${directory}
-    return $?
+  local directory="${1}"
+  if ! test -d "${directory}" ; then
+    mkdir -p "${directory}"
+    local ret=$?
+    if test $ret -gt 0 ; then
+      errmsg "directory $directory can't be created"
+    fi
+    return $ret
   fi
-  return 1
+  return 0
+}
+
+
+function delete_directory() {
+  if test -z "${1}" ; then
+    errmsg "directory name"
+    return 1
+  fi
+
+  local directory="${1}"
+  if test -d "${directory}" ; then
+    rm -fR "${directory}"
+    local ret=$?
+    if test $ret -gt 0 ; then
+      errmsg "directory $directory can't be deleted"
+    fi
+    return $ret
+  fi
+  return 0
 }
 
 
@@ -185,8 +208,26 @@ function create_symlink() {
     return 1
   fi
 
-  source="${1}"
-  destination="${2}"
-  ln -s "${source}" "${destination}"
-  return $?
+  local src="${1}"
+  local dst="${2}"
+  if ! test -L "${dst}" ; then
+    ln -s "${src}" "${dst}"
+    return $?
+  fi
+  return 0
+}
+
+
+function delete_symlink() {
+  if test -z "${1}" ; then
+    errmsg "symlink name"
+    return 1
+  fi
+  local slink="${1}"
+
+  if test -L "${slink}" ; then
+    rm -f "${slink}"
+    return $?
+  fi
+  return 0
 }

@@ -7,7 +7,9 @@
 
 
 function __SP_vasp_prepare() {
+  local input=""
   input=`__runinp ${MAININPUT}`
+  local inpfile=""
 
   # prepare inputs --------------------------------------------------------------
   inpfile="${INPUTDIR}/${input}${cntlsuffix}"
@@ -50,13 +52,13 @@ function __SP_vasp_prepare() {
   if ! test -z "${LIBS}" ; then
     for lib in ${LIBS}; do
       # build potcar
-      libpath="${LIBDIR}/${lib}/POTCAR.gz"
+      local libpath="${LIBDIR}/${lib}/POTCAR.gz"
       if ! test -f "${libpath}" ; then
         errmsg "projectorfile ${libpath} not found"
         return 31
       fi
       __cpunzmv "${libpath}" "${WORKDIR}"
-      tmplibpath="${WORKDIR}/POTCAR"
+      local tmplibpath="${WORKDIR}/POTCAR"
       if ! test -f "${tmplibpath}" ; then
         errmsg "projectorfile ${tmplibpath} not found"
         return 32
@@ -90,7 +92,9 @@ function __SP_vasp_prepare() {
   fi # LIBS
 
   # prepare others --------------------------------------------------------------
-  prefix=${MAININPUT}
+  local prefix=${MAININPUT}
+  local oinpath=""
+  local oout=""
   for oin in ${OTHERINPUTS}; do
     oinpath="${INPUTDIR}/${oin}"
     if ! test -f "${oinpath}" ; then
@@ -98,6 +102,7 @@ function __SP_vasp_prepare() {
       return 35
     fi
     oout=${oin##${prefix}.}
+    oout=${oout%%${csuffix}}
     __cpunzmv "${oinpath}" "${WORKDIR}" "${oout}"
   done
 
@@ -113,6 +118,7 @@ function __SP_vasp_collect() {
   if test "${NEB}" = "on" ; then
     cd "${WORKDIR}"
 
+    local ret
     for rs in ${WORKDIR}/[01]*; do
       if test -f "${rs}" ; then
         __save "${rs}" "${input}"
