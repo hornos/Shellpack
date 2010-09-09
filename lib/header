@@ -1,0 +1,18 @@
+#!/bin/bash
+# hard links: sshlogin, sshkeygen
+# mcedit TAB: 4 with spaces
+
+### BEGIN HEADER
+name=$(basename ${0})
+spname="__SP_${name}"
+default_kickstart="${HOME}/shellpack/lib/kickstart"
+if test -z "${SHELLPACK_KICKSTART}" ; then
+  if test -r "${default_kickstart}" ; then
+    SHELLPACK_KICKSTART="${default_kickstart}"
+  else
+    echo "kickstart error"
+    exit 10
+  fi
+fi
+# read kickstart
+. ${SHELLPACK_KICKSTART}

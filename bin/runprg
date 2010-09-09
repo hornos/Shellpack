@@ -1,0 +1,18 @@
+#!/bin/bash
+
+### BEGIN HEADER
+. $(dirname ${0})/../lib/header
+# load libraries
+uselib run
+### END HEADER
+
+prg="vasp"
+guide="vasp.guide"
+while getopts p:g: opt; do
+  case "$opt" in
+    p) prg=$OPTARG;;
+    g) guide=$OPTARG;;
+  esac
+done
+
+${spname} ${prg} ${guide}
