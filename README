@@ -11,10 +11,10 @@ core  : core
 
 ssh   : ssh login, scp, fuse sshfs mount
 
-run   : vasp
+run   : vasp, siesta, denchar
 
 
 TODO:
-run   : siesta, espresso
+run   : espresso
 
 queue : PBE, SGE, SLURM
