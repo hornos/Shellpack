@@ -10,7 +10,7 @@ prg="vasp"
 guide="vasp.guide"
 while getopts hp:g: opt; do
   case "$opt" in
-    p) prg=$OPTARG;;
+    p) prg=$OPTARG; guide="${prg}.guide";;
     g) guide=$OPTARG;;
     h) echo "Usage: $(basename $0) -p program -g guide"; exit 1;;
   esac

@@ -1,0 +1,29 @@
+# for batch scheduler comment out
+TMPDIR=/tmp
+
+INPUTDIR="${PWD}"
+WORKDIR="${TMPDIR}/denchar-${USER}-${HOSTNAME}-$$"
+RESULTDIR="${INPUTDIR}"
+
+PRGBIN="denchar"
+PARAMS=""
+
+LIBDIR="/lib/ions"
+LIBS="A.ion.gz B.ion.gz"
+
+MAININPUT="<input.fdf"
+PREFIX=`if test "${MAININPUT:0:1}" = "<" ; then _input=${MAININPUT:1}; else _input=${MAININPUT}; fi; grep -i systemlabel ${_input} | awk '{print $2}';`
+OTHERINPUTS="${PREFIX}.PLD.gz ${PREFIX}.DIM.gz ${PREFIX}.WFS.gz ${PREFIX}.DM.gz"
+
+ONERR="clean"
+
+RESULTS="*.cube"
+
+# MPI
+# NSLOTS=2
+# PRERUN="mpirun -np $NSLOTS"
+
+# Intel MKL
+OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1
+MKL_DYNAMIC=FALSE

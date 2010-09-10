@@ -218,7 +218,7 @@ function __SP_runprg() {
   fi
 
   echo
-  echo "Running ${program}"
+  echo "Running: ${program}"
 
   __isrdrc ${MAININPUT}
   ret=$?

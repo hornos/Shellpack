@@ -1,0 +1,16 @@
+#!/bin/bash
+# hard links: sshpush, sshpop
+# mcedit TAB: 4 with spaces
+
+### BEGIN HEADER
+. $(dirname ${0})/../lib/header
+# load libraries
+uselib ssh
+### END HEADER
+
+
+### BEGIN MAIN
+host=${1}
+file=${2}
+${spname} ${host} ${file}
+### END MAIN

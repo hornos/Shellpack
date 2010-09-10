@@ -1,0 +1,31 @@
+# for batch scheduler comment out
+TMPDIR=/tmp
+
+INPUTDIR="${PWD}"
+WORKDIR="${TMPDIR}/siesta-${USER}-${HOSTNAME}-$$"
+RESULTDIR="${INPUTDIR}"
+
+PRGBIN="siesta.mpi"
+PARAMS=""
+
+LIBDIR="/lib/pseudos"
+LIBS="A.psf.gz B.psf.gz"
+
+MAININPUT="<input.fdf"
+PREFIX=`if test "${MAININPUT:0:1}" = "<" ; then _input=${MAININPUT:1}; else _input=${MAININPUT}; fi; grep -i systemlabel ${_input} | awk '{print $2}';`
+OTHERINPUTS=""
+# UseSaveData  .true.
+# OTHERINPUTS="${PREFIX}.DM.gz ${PREFIX}.XV.gz ${PREFIX}.CG.gz"
+
+ONERR="clean"
+
+RESULTS="*out* ${PREFIX}.*"
+
+# MPI
+NSLOTS=2
+PRERUN="mpirun -np $NSLOTS"
+
+# Intel MKL
+OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1
+MKL_DYNAMIC=FALSE

@@ -7,6 +7,7 @@
 
 
 function __SP_siesta_prepare() {
+  local suffix=${1:-${pseusuffix}}
   local input=""
   input=$(__runinp ${MAININPUT})
   input=${input%%${cntlsuffix}}
@@ -32,11 +33,11 @@ function __SP_siesta_prepare() {
       # build potcar
       local libpath="${LIBDIR}/${lib}"
       if ! test -f "${libpath}" ; then
-        errmsg "pseudofile ${libpath} not found"
+        errmsg "library file ${libpath} not found"
         return 31
       fi
 
-      local pname=${lib%%.*${pseusuffix##.}*}${pseusuffix}
+      local pname=${lib%%.*${suffix##.}*}${suffix}
       __cpunzmv "${libpath}" "${WORKDIR}" "${pname}"
     done
   fi # LIBS

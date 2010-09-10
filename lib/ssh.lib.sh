@@ -209,3 +209,31 @@ function __SP_sshkeygen() {
     return ${ret}
   fi
 } # end __SP_sshkeygen
+
+
+function __SP_sshinfo() {
+  local name=""
+  name=$(basename ${0})
+  local host="${1:-default}"
+  local host_info="${shellpack_hosts}/${host}"
+
+  if ! test -r "${host_info}" ; then
+    errmsg "config for ${host} in ${shellpack_hosts} not found"
+    return 1
+  fi
+
+  . ${host_info}
+  echo
+  echo "MID: ${MID}"
+  echo "--------------------------------------------------------------------------------"
+  echo "SSH Login  : ${SSH_USER}@${FQDN}"
+  echo "SSH Options: ${SSH_OPT}"
+  echo "SSH Proxy  : ${SSH_PROXY}"
+  echo
+  echo "SCP Remote : ${SCP_REMOTE}"
+  echo "SCP Local  : ${SCP_LOCAL}"
+  echo
+  echo "SSHFS Mount  : ${SSH_USER}@${FQDN}:${SSHFS_REMOTE} -> ${SSHFS_LOCAL}"
+  echo "SSHFS Options: ${SSHFS_OPT}"
+  echo
+}

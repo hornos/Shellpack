@@ -1,0 +1,28 @@
+# for batch scheduler comment out
+TMPDIR=/tmp
+
+INPUTDIR="${PWD}"
+WORKDIR="${TMPDIR}/vasp-${USER}-${HOSTNAME}-$$"
+RESULTDIR="${INPUTDIR}"
+
+PRGBIN="vasp.mpi"
+PARAMS=""
+LIBDIR="/lib/projectors"
+LIBS="A B"
+
+MAININPUT="AB"
+# OTHERINPUTS=""
+OTHERINPUTS="AB.WAVECAR.gz"
+
+ONERR="keep"
+
+RESULTS="*"
+
+# MPI
+NSLOTS=2
+PRERUN="mpirun -np $NSLOTS"
+
+# Intel MKL
+OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1
+MKL_DYNAMIC=FALSE
