@@ -30,6 +30,18 @@ function __SP_jobsub_sge() {
   local nodes=${NODES}
   local cores=${CORES}
   local slots=$((nodes*cores))
+
+  # HYBMPI option
+  if test "${HYBMPI}" = "on" ; then
+    export HYBMPI_NODES=${nodes}
+    export HYBMPI_CORES=${cores}
+    export HYBMPI_SLOTS=${slots}
+  else
+    export HYBMPI_NODES=${slots}
+    export HYBMPI_CORES=1
+    export HYBMPI_SLOTS=${slots}  
+  fi
+
   # mail
   if ! test -z "${QUEUE_MAIL_TO}" ; then
     echo "#${pfx} -M ${QUEUE_MAIL_TO}"       >> "${qbatch}"

@@ -30,6 +30,17 @@ function __SP_jobsub_slurm() {
   local cores=${CORES}
   local slots=$((nodes*cores))
 
+  # HYBMPI option
+  if test "${HYBMPI}" = "on" ; then
+    export HYBMPI_NODES=${nodes}
+    export HYBMPI_CORES=${cores}
+    export HYBMPI_SLOTS=${slots}
+  else
+    export HYBMPI_NODES=${slots}
+    export HYBMPI_CORES=1
+    export HYBMPI_SLOTS=${slots}  
+  fi
+
   # mail
   if ! test -z "${QUEUE_MAIL_TO}" ; then
     echo "#${pfx} --mail-user=${QUEUE_MAIL_TO}"      >> "${qbatch}"
@@ -92,8 +103,11 @@ function __mail_sub() {
 function __mail_msg() {
   local msg=""
   msg=$(date)
-  if ! test -z "${NSLOTS}" ; then
-    echo "${msg}\nRunning on ${NSLOTS} nodes"
+  if ! test -z "${SLURM_JOB_NUM_NODES}" ; then
+    echo "${msg}\nRunning on ${SLURM_JOB_NUM_NODES} nodes"
+    if ! test -z "${SLURM_NTASKS_PER_NODE}" ; then
+      echo "Running on ${SLURM_NTASKS_PER_NODE} cores per node"
+    fi 
   else
     echo "${msg}"
   fi
