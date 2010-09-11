@@ -45,7 +45,7 @@ function __SP_jobsub_slurm() {
 
   # memory
   if ! test -z "${MEMORY}" ; then
-    echo "#${pfx} --mem-per-cpu=${MEMORY}M"   >> "${qbatch}"
+    echo "#${pfx} --mem-per-cpu=${MEMORY}${memsize}" >> "${qbatch}"
   fi
 
   if ! test -z "${NODES}" ; then

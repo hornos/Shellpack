@@ -47,7 +47,7 @@ function __SP_jobsub_sge() {
   if ! test -z "${MEMORY}" ; then
     local memory=${MEMORY}
     vmem=$((slots*memory))
-    echo "#${pfx} -l h_vmem=${vmem}M"          >> "${qbatch}"
+    echo "#${pfx} -l h_vmem=${vmem}${memsize}" >> "${qbatch}"
   fi
 
   # arch
