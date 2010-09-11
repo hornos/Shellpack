@@ -3,7 +3,7 @@ QUEUE_TYPE="sge"
 QUEUE_MAIL_TO="email"
 QUEUE_MAIL="abe"
 
-QUEUE_ERROR_FILE="ErrorOut"
+QUEUE_ERROUT="ErrorOut"
 
 QUEUE_QUEUE="sge.queue"
 QUEUE_PE="pe_mpi"
