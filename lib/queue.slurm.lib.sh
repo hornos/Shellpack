@@ -80,3 +80,17 @@ function __SP_jobsub_slurm() {
 
   echo "${COMMAND}"                           >> "${qbatch}"
 }
+
+function __mail_sub() {
+  echo "Job ${SLURM_JOB_ID} (${SLURM_JOB_NAME})"
+}
+
+function __mail_msg() {
+  local msg=""
+  msg=$(date)
+  if ! test -z "${NSLOTS}" ; then
+    echo "${msg}\nRunning on ${NSLOTS} nodes"
+  else
+    echo "${msg}"
+  fi
+}
