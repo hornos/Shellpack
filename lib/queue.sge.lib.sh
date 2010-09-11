@@ -85,5 +85,24 @@ function __SP_jobsub_sge() {
     echo "${QUEUE_SETUP}"                     >> "${qbatch}"
   fi
 
+  # for mail
+  if test "${COMMAND/*runprg*/runprg/}" ; then
+    COMMAND="${COMMAND} -s ${QUEUE_TYPE}"
+  fi
   echo "${COMMAND}"                           >> "${qbatch}"
+}
+
+
+function __mail_sub() {
+  echo "Job ${JOB_ID} (${JOB_NAME})"
+}
+
+function __mail_msg() {
+  local msg=""
+  msg=$(date)
+  if ! test -z "${NSLOTS}" ; then
+    echo "${msg}\nRunning on ${NSLOTS} nodes"
+  else
+    echo "${msg}"
+  fi
 }

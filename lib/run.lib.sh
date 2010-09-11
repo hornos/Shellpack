@@ -135,6 +135,11 @@ function __SP_runprg() {
   # options ---------------------------------------------------------------------
   local prg=${1:-vasp}
   local guide=${2:-vasp.guide}
+  local sched=${3}
+
+  if ! test -z ${QUEUE_MAIL_TO} && ! test -z "${sched}" ; then
+    uselib queue.${sched}
+  fi
 
   echo
   prndln
@@ -220,10 +225,12 @@ function __SP_runprg() {
     program="${program} ${PARAMS}"
   fi
 
+
   echo
   prnsln
   echo "Running:"
   echo "${program}"
+  __send_mail "Started"
 
   __isrdrc ${MAININPUT}
   ret=$?
@@ -247,6 +254,7 @@ function __SP_runprg() {
       __cleanup
     fi
     errmsg "program ${program} exited with error $ret"
+    __send_mail "Failed ($ret)"
     return $ret
   fi
 
@@ -257,6 +265,7 @@ function __SP_runprg() {
       __cleanup
     fi
     errmsg "program ${prg} finish exited with error code $ret"
+    __send_mail "Failed (finish)"
     return $ret
   fi
 
@@ -273,11 +282,44 @@ function __SP_runprg() {
       __cleanup
     fi
     errmsg "program ${prg} collect exited with error code $ret"
+    __send_mail "Failed (collect)"
     return $ret
   fi
 
   __cleanup
+  __send_mail "Completed"
 
   prndln
   echo
+}
+
+
+function __mail() {
+  local sub="${1}"
+  local msg="${2}"
+  local mto="${3}"
+
+  if test -z "${sub}" || test -z "${msg}" || test -z "${mto}" ; then
+    return 1
+  fi
+
+  echo
+  prnsln
+  echo "Sending mail:"
+  echo "${mto}"
+  echo -e "${msg}" | ${mail} -s "${sub}" "${mto}"
+}
+
+
+function __send_mail() {
+  local act=${1:-Started}
+  # send mail
+  if ! test -z "${QUEUE_MAIL_TO}" && ! test -z "${sched}"; then
+    local msub=""
+    local mmsg=""
+    msub=$(__mail_sub)
+    mmsg=$(__mail_msg)
+    msub="${msub} ${act}"
+    __mail "${msub}" "${mmsg}" "${QUEUE_MAIL_TO}"
+  fi
 }

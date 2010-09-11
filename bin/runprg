@@ -8,12 +8,13 @@ uselib run
 
 prg="vasp"
 guide="vasp.guide"
-while getopts hp:g: opt; do
+while getopts hp:g:s: opt; do
   case "$opt" in
     p) prg=$OPTARG; guide="${prg}.guide";;
     g) guide=$OPTARG;;
-    h) echo "Usage: $(basename $0) -p program -g guide"; exit 1;;
+    s) sched=$OPTARG;;
+    h) echo "Usage: $(basename $0) -p program [-g guide] [-s scheduler]"; exit 1;;
   esac
 done
 
-${spname} "${prg}" "${guide}"
+${spname} "${prg}" "${guide}" "${sched}"
