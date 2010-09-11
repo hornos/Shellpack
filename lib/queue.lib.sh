@@ -35,9 +35,9 @@ function __SP_jobsub() {
 
   echo
   echo "Shellpack: $QUEUE_TYPE"
-  echo "--------------------------------------------------------------------------------"
+  prnsln
   cat "${qbatch}"
-  echo "--------------------------------------------------------------------------------"
+  prnsln
   echo
 
   yesno "Submit job?"
