@@ -137,7 +137,10 @@ function __SP_runprg() {
   local guide=${2:-vasp.guide}
 
   echo
+  prndln
   echo "Shellpack: $prg"
+  date
+  echo
 
   # load program library --------------------------------------------------------
   uselib run.${prg}
@@ -202,7 +205,7 @@ function __SP_runprg() {
   # run program -----------------------------------------------------------------
   cd "${WORKDIR}"
 
-  echo
+  prnsln
   echo "Input files in ${WORKDIR}:"
   ls
 
@@ -218,7 +221,9 @@ function __SP_runprg() {
   fi
 
   echo
-  echo "Running: ${program}"
+  prnsln
+  echo "Running:"
+  echo "${program}"
 
   __isrdrc ${MAININPUT}
   ret=$?
@@ -232,6 +237,7 @@ function __SP_runprg() {
   ret=$?
 
   echo
+  prnsln
   echo "Output files in ${WORKDIR}:"
   ls
 
@@ -256,6 +262,7 @@ function __SP_runprg() {
 
   # collect ---------------------------------------------------------------------
   echo
+  prnsln
   echo "Saved output files:"
   ls ${RESULTS}
 
@@ -270,4 +277,7 @@ function __SP_runprg() {
   fi
 
   __cleanup
+
+  prndln
+  echo
 }

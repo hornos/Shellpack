@@ -252,3 +252,34 @@ function delete_symlink() {
   fi
   return 0
 }
+
+
+function yesno() {
+  local msg="${1:-Answer}"
+  local ans
+  echo -n "${msg} (y - yes / n - no): "
+  read ans
+  case "$ans" in
+    "y" | "Y")
+      return 0
+    ;;
+    "n" | "N")
+      errmsg "abort"
+      return 5
+    ;;
+    *)
+      errmsg "invalid answer"
+      return 6
+    ;;
+  esac
+  return 7
+}
+
+
+function prnsln() {
+  echo "--------------------------------------------------------------------------------"
+}
+
+function prndln() {
+  echo "================================================================================"
+}
