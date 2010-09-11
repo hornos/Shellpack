@@ -86,7 +86,7 @@ function __SP_jobsub_sge() {
   fi
 
   # for mail
-  if test "${COMMAND/*runprg*/runprg/}" ; then
+  if test "${COMMAND/*runprg*/runprg/}" = "runprg" ; then
     COMMAND="${COMMAND} -s ${QUEUE_TYPE}"
   fi
   echo "${COMMAND}"                           >> "${qbatch}"
