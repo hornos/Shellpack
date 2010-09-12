@@ -32,23 +32,19 @@ function __SP_jobsub() {
   local total_cpus=$((nodes*cpus))
   local tasks=$((cpus*cores))
   local slots=$((nodes*total_cores))
+  local threads=${cores}
 
   export TASKS=${tasks}
-  export HYBMPI_NODES=${nodes}
-  export HYBMPI_CPUS=${cpus}
-  export HYBMPI_CORES=${cores}
-  export HYBMPI_SLOTS=${slots}
 
   if test "${HYBMPI}" = "on" ; then
-    export HYBMPI_THRDS=${HYBMPI_CORES}
-    export HYBMPI_MPIRUN_OPTS="-np ${total_cpus} -npernode ${HYBMPI_CPUS}"
+    export HYBMPI_MPIRUN_OPTS="-np ${total_cpus} -npernode ${cpus}"
   else
-    export HYBMPI_THRDS=1
-    export HYBMPI_MPIRUN_OPTS="-np ${HYBMPI_SLOTS} -npernode ${tasks}"      
+    threads=1
+    export HYBMPI_MPIRUN_OPTS="-np ${slots} -npernode ${tasks}"      
   fi
   # Intel MKL
-  export OMP_NUM_THREADS=${HYBMPI_THRDS}
-  export MKL_NUM_THREADS=${HYBMPI_THRDS}
+  export OMP_NUM_THREADS=${threads}
+  export MKL_NUM_THREADS=${threads}
   export MKL_DYNAMIC=FALSE
 
 
