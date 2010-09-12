@@ -25,30 +25,6 @@ function __SP_jobsub() {
     return 2
   fi
 
-# MPI ---------------------------------------------------------------------------
-  local nodes=${NODES}
-  local cores=${CORES}
-  local cpus=${CPUS}
-  local total_cpus=$((nodes*cpus))
-  local tasks=$((cpus*cores))
-  local slots=$((nodes*tasks))
-  local threads=${cores}
-
-  export SLOTS=${slots}
-  export TASKS=${tasks}
-
-  if test "${HYBMPI}" = "on" ; then
-    export HYBMPI_MPIRUN_OPTS="-np ${total_cpus} -npernode ${cpus}"
-  else
-    threads=1
-    export HYBMPI_MPIRUN_OPTS="-np ${slots} -npernode ${tasks}"
-  fi
-  # Intel MKL
-  export OMP_NUM_THREADS=${threads}
-  export MKL_NUM_THREADS=${threads}
-  export MKL_DYNAMIC=FALSE
-
-
 # submit to queue ---------------------------------------------------------------
   local queue=${QUEUE_TYPE}
   uselib queue.${queue}
@@ -60,8 +36,44 @@ function __SP_jobsub() {
   echo "#!${shell}"      >  "${qbatch}"
   echo "## ${timestamp}" >> "${qbatch}"
 
+# MPI ---------------------------------------------------------------------------
+  local nodes=${NODES}
+  local cores=${CORES}
+  local cpus=${CPUS}
+  local total_cpus=$((nodes*cpus))
+  local tasks=$((cpus*cores))
+  local slots=$((nodes*tasks))
+  local threads=${cores}
+
+  SLOTS=${slots}
+  TASKS=${tasks}
+
+  if test "${HYBMPI}" = "on" ; then
+    echo "export HYBMPI_MPIRUN_OPTS=\"-np ${total_cpus} -npernode ${cpus}\"" >> "${qbatch}"
+  else
+    threads=1
+    echo "export HYBMPI_MPIRUN_OPTS=\"-np ${slots} -npernode ${tasks}\""     >> "${qbatch}"
+  fi
+  # Intel MKL
+  echo "export OMP_NUM_THREADS=${threads}" >> "${qbatch}"
+  echo "export MKL_NUM_THREADS=${threads}" >> "${qbatch}"
+  echo "export MKL_DYNAMIC=FALSE"          >> "${qbatch}"
+
+# queue specific jobsub ---------------------------------------------------------
   __SP_jobsub_${queue} "${qbatch}"
 
+# command -----------------------------------------------------------------------
+  if ! test -z "${QUEUE_SETUP}" ; then
+    echo "${QUEUE_SETUP}"                     >> "${qbatch}"
+  fi
+
+  # for mail
+  if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
+    COMMAND="${COMMAND} -s ${QUEUE_TYPE}"
+  fi
+  echo "${COMMAND}"                           >> "${qbatch}"
+
+# submission --------------------------------------------------------------------
   echo
   echo "Shellpack: $QUEUE_TYPE"
   prnsln

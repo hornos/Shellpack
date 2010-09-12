@@ -68,15 +68,6 @@ function __SP_jobsub_slurm() {
     echo "#${pfx} ${QUEUE_OPTS}"              >> "${qbatch}"
   fi
 
-  if ! test -z "${QUEUE_SETUP}" ; then
-    echo "${QUEUE_SETUP}"                     >> "${qbatch}"
-  fi
-
-  # for mail
-  if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
-    COMMAND="${COMMAND} -s ${QUEUE_TYPE}"
-  fi
-  echo "${COMMAND}"                           >> "${qbatch}"
 }
 
 function __mail_sub() {
