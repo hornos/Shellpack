@@ -58,6 +58,14 @@ function __SP_jobsub() {
   echo "export OMP_NUM_THREADS=${threads}" >> "${qbatch}"
   echo "export MKL_NUM_THREADS=${threads}" >> "${qbatch}"
   echo "export MKL_DYNAMIC=FALSE"          >> "${qbatch}"
+  if test ${threads} -gt 1 ; then
+    echo "export KMP_LIBRARY=turnaround"   >> "${qbatch}"
+    # echo "export KMP_AFFINITY=granularity=core,compact,0,0"   >> "${qbatch}"
+    # echo "export KMP_AFFINITY=norespect,granularity=core,none,0,0"   >> "${qbatch}"
+    # echo "export KMP_AFFINITY=granularity=thread,compact0,0" >> "${qbatch}"
+  else
+    echo "export KMP_LIBRARY=serial"       >> "${qbatch}"
+  fi
 
 # queue specific jobsub ---------------------------------------------------------
   __SP_jobsub_${queue} "${qbatch}"
