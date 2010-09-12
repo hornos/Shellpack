@@ -31,7 +31,7 @@ function __SP_jobsub() {
   local cpus=${CPUS}
   local total_cpus=$((nodes*cpus))
   local tasks=$((cpus*cores))
-  local slots=$((nodes*total_cores))
+  local slots=$((nodes*tasks))
   local threads=${cores}
 
   export SLOTS=${slots}
@@ -41,7 +41,7 @@ function __SP_jobsub() {
     export HYBMPI_MPIRUN_OPTS="-np ${total_cpus} -npernode ${cpus}"
   else
     threads=1
-    export HYBMPI_MPIRUN_OPTS="-np ${slots} -npernode ${tasks}"      
+    export HYBMPI_MPIRUN_OPTS="-np ${slots} -npernode ${tasks}"
   fi
   # Intel MKL
   export OMP_NUM_THREADS=${threads}
