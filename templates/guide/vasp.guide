@@ -1,20 +1,19 @@
 # for batch scheduler comment out
 TMPDIR=/tmp
-# TMPDIR=${HOME}/temp
-
 
 INPUTDIR="${PWD}"
 WORKDIR="${TMPDIR}/vasp-${USER}-${HOSTNAME}-$$"
 RESULTDIR="${INPUTDIR}"
 
-PRGBIN="vasp.mpi"
+PRGBIN="/path/to/vasp.mpi"
 PARAMS=""
-LIBDIR="/lib/projectors"
+LIBDIR="/path/to/projectors"
 LIBS="A B"
 
 MAININPUT="AB"
-# OTHERINPUTS=""
-OTHERINPUTS="AB.WAVECAR.gz"
+OTHERINPUTS=""
+# for ISTART > 0
+# OTHERINPUTS="AB.WAVECAR.gz"
 
 # for GW comment out
 # GW="on"
@@ -23,14 +22,6 @@ ONERR="keep"
 
 RESULTS="*"
 
-# MPI
-NSLOTS=${HYBMPI_NODES}
-PRERUN="mpirun -np $NSLOTS"
-# PRERUN="mpirun"
+PRERUN="mpirun ${HYBMPI_MPIRUN_OPTS}"
 
-# Intel MKL
-OMP_NUM_THREADS=${HYBMPI_CORES}
-MKL_NUM_THREADS=${HYBMPI_CORES}
-MKL_DYNAMIC=FALSE
-
-# LD_LIBRARY_PATH
+# LD_LIBRARY_PATH=

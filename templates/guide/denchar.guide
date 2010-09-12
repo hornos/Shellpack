@@ -5,10 +5,10 @@ INPUTDIR="${PWD}"
 WORKDIR="${TMPDIR}/denchar-${USER}-${HOSTNAME}-$$"
 RESULTDIR="${INPUTDIR}"
 
-PRGBIN="denchar"
+PRGBIN="/path/to/denchar"
 PARAMS=""
 
-LIBDIR="/lib/ions"
+LIBDIR="/path/to/ions"
 LIBS="A.ion.gz B.ion.gz"
 
 MAININPUT="<input.fdf"
@@ -19,9 +19,4 @@ ONERR="clean"
 
 RESULTS="*.cube"
 
-# Intel MKL
-OMP_NUM_THREADS=1
-MKL_NUM_THREADS=1
-MKL_DYNAMIC=FALSE
-
-# LD_LIBRARY_PATH
+# LD_LIBRARY_PATH=

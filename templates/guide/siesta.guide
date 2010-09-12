@@ -5,10 +5,10 @@ INPUTDIR="${PWD}"
 WORKDIR="${TMPDIR}/siesta-${USER}-${HOSTNAME}-$$"
 RESULTDIR="${INPUTDIR}"
 
-PRGBIN="siesta.mpi"
+PRGBIN="/path/to/siesta.mpi"
 PARAMS=""
 
-LIBDIR="/lib/pseudos"
+LIBDIR="/path/to/pseudos"
 LIBS="A.psf.gz B.psf.gz"
 
 MAININPUT="<input.fdf"
@@ -21,14 +21,7 @@ ONERR="clean"
 
 RESULTS="*out* ${PREFIX}.*"
 
-# MPI
-NSLOTS=${HYBMPI_NODES}
-PRERUN="mpirun -np $NSLOTS"
+PRERUN="mpirun ${HYBMPI_MPIRUN_OPTS}"
 
-# Intel MKL
-OMP_NUM_THREADS=${HYBMPI_CORES}
-MKL_NUM_THREADS=${HYBMPI_CORES}
-MKL_DYNAMIC=FALSE
-
-# LD_LIBRARY_PATH
+# LD_LIBRARY_PATH=
 
