@@ -1,0 +1,9 @@
+NAME=si
+TIME=00:30:00
+MEMORY=1000
+NODES=2
+CORES=4
+CPUS=2
+QUEUE=queue
+HYBMPI="off"
+COMMAND="runprg -p vasp -g vasp.guide"

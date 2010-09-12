@@ -25,6 +25,33 @@ function __SP_jobsub() {
     return 2
   fi
 
+# MPI ---------------------------------------------------------------------------
+  local nodes=${NODES}
+  local cores=${CORES}
+  local cpus=${CPUS}
+  local total_cpus=$((nodes*cpus))
+  local tasks=$((cpus*cores))
+  local slots=$((nodes*total_cores))
+
+  export TASKS=${tasks}
+  export HYBMPI_NODES=${nodes}
+  export HYBMPI_CPUS=${cpus}
+  export HYBMPI_CORES=${cores}
+  export HYBMPI_SLOTS=${slots}
+
+  if test "${HYBMPI}" = "on" ; then
+    export HYBMPI_THRDS=${HYBMPI_CORES}
+    export HYBMPI_MPIRUN_OPTS="-np ${total_cpus} -npernode ${HYBMPI_CPUS}"
+  else
+    export HYBMPI_THRDS=1
+    export HYBMPI_MPIRUN_OPTS="-np ${HYBMPI_SLOTS} -npernode ${tasks}"      
+  fi
+  # Intel MKL
+  export OMP_NUM_THREADS=${HYBMPI_THRDS}
+  export MKL_NUM_THREADS=${HYBMPI_THRDS}
+  export MKL_DYNAMIC=FALSE
+
+
 # submit to queue ---------------------------------------------------------------
   local queue=${QUEUE_TYPE}
   uselib queue.${queue}

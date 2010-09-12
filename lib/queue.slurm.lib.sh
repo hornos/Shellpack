@@ -26,21 +26,6 @@ function __SP_jobsub_slurm() {
   fi
   echo "#${pfx} --job-name ${NAME}"                  >> "${qbatch}"
 
-  local nodes=${NODES}
-  local cores=${CORES}
-  local slots=$((nodes*cores))
-
-  # HYBMPI option
-  if test "${HYBMPI}" = "on" ; then
-    export HYBMPI_NODES=${nodes}
-    export HYBMPI_CORES=${cores}
-    export HYBMPI_SLOTS=${slots}
-  else
-    export HYBMPI_NODES=${slots}
-    export HYBMPI_CORES=1
-    export HYBMPI_SLOTS=${slots}  
-  fi
-
   # mail
   if ! test -z "${QUEUE_MAIL_TO}" ; then
     echo "#${pfx} --mail-user=${QUEUE_MAIL_TO}"      >> "${qbatch}"
@@ -60,13 +45,17 @@ function __SP_jobsub_slurm() {
   fi
 
   if ! test -z "${NODES}" ; then
-    echo "#${pfx} --nodes=${NODES}"           >> "${qbatch}"
+    echo "#${pfx} --nodes=${NODES}"                  >> "${qbatch}"
   fi
 
-  if ! test -z "${CORES}" ; then
-    echo "#${pfx} --ntasks-per-node=${CORES}" >> "${qbatch}"
+  if ! test -z "${TASKS}" ; then
+      echo "#${pfx} --ntasks-per-node=${TASKS}"      >> "${qbatch}"  
+  else
+    if ! test -z "${CORES}" ; then
+      echo "#${pfx} --ntasks-per-node=${CORES}"      >> "${qbatch}"
+    fi
   fi
-
+  
   # other constraints
   if ! test -z "${QUEUE_CONST}" ; then
     for con in ${QUEUE_CONST} ; do
