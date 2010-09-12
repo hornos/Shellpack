@@ -7,13 +7,7 @@
 
 
 function __SP_jobsub_slurm() {
-  local timestamp
-  local qbatch="${1:-./queue.${QUEUE_TYPE}}"
-
-  timestamp=$(date)
-
-  echo "#!${shell}"      >  "${qbatch}"
-  echo "## ${timestamp}" >> "${qbatch}"
+  local qbatch="${1}"
 
   if test -z "${COMMAND}" ; then
     errmsg "no command"

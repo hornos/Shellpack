@@ -54,6 +54,11 @@ function __SP_jobsub() {
   uselib queue.${queue}
 
   local qbatch="./submit.${QUEUE_TYPE}.sh"
+  local timestamp
+  timestamp=$(date)
+
+  echo "#!${shell}"      >  "${qbatch}"
+  echo "## ${timestamp}" >> "${qbatch}"
 
   __SP_jobsub_${queue} "${qbatch}"
 
