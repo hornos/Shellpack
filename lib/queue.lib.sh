@@ -34,6 +34,7 @@ function __SP_jobsub() {
   local slots=$((nodes*total_cores))
   local threads=${cores}
 
+  export SLOTS=${slots}
   export TASKS=${tasks}
 
   if test "${HYBMPI}" = "on" ; then

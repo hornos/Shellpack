@@ -59,7 +59,7 @@ function __SP_jobsub_sge() {
 
   # pe
   if ! test -z "${QUEUE_PE}" ; then
-    echo "#${pfx} -pe ${QUEUE_PE} ${HYBMPI_SLOTS}" >> "${qbatch}"
+    echo "#${pfx} -pe ${QUEUE_PE} ${SLOTS}"   >> "${qbatch}"
   fi
 
   # project
