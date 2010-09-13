@@ -26,10 +26,10 @@ function __SP_jobsub() {
   fi
 
 # submit to queue ---------------------------------------------------------------
-  local queue=${QUEUE_TYPE}
+  local queue=${SCHED}
   uselib queue.${queue}
 
-  local qbatch="./submit.${QUEUE_TYPE}.sh"
+  local qbatch="./submit.${SCHED}.sh"
   local timestamp
   timestamp=$(date)
 
@@ -95,13 +95,13 @@ function __SP_jobsub() {
 
 # mail --------------------------------------------------------------------------
   if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
-    COMMAND="${COMMAND} -s ${QUEUE_TYPE}"
+    COMMAND="${COMMAND} -s ${SCHED}"
   fi
   echo "${COMMAND}"                           >> "${qbatch}"
 
 # submission --------------------------------------------------------------------
   echo
-  echo "Shellpack: $QUEUE_TYPE"
+  echo "Shellpack: $SCHED"
   prnsln
   cat "${qbatch}"
   prnsln

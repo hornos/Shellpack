@@ -1,4 +1,4 @@
-QUEUE_TYPE="sge"
+SCHED="sge"
 QUEUE_MAIL_TO="email"
 QUEUE_MAIL="abe"
 QUEUE_QUEUE="sge.q"

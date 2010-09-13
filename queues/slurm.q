@@ -1,4 +1,4 @@
-QUEUE_TYPE="slurm"
+SCHED="slurm"
 QUEUE_MAIL_TO="email"
 QUEUE_MAIL="ALL"
 QUEUE_PROJECT="projectno"
