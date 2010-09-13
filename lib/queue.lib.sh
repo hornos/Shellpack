@@ -37,13 +37,15 @@ function __SP_jobsub() {
   echo "## ${timestamp}" >> "${qbatch}"
 
 # MPI vars ----------------------------------------------------------------------
-  local nodes=${NODES}
-  local cores=${CORES}
-  local cpus=${CPUS}
-  local total_cpus=$((nodes*cpus))
-  local tasks=$((cpus*cores))
+  local nodes=${NODES:-1}
+  local cores=${CORES:-4}
+  local sckts=${SCKTS:-2}
+  local thrds=${THRDS:-1}
+
+  local total_sckts=$((nodes*sckts))
+  local tasks=$((sckts*cores))
   local slots=$((nodes*tasks))
-  local threads=${cores}
+  local threads=$((cores*thrds))
 
   SLOTS=${slots}
   TASKS=${tasks}
@@ -73,9 +75,9 @@ function __SP_jobsub() {
 
 # MPI ---------------------------------------------------------------------------
   if test "${HYBMPI}" = "on" ; then
-    echo "export HYBMPI_MPIRUN_OPTS=\"-np ${total_cpus} -npernode ${cpus}\"" >> "${qbatch}"
+    echo "export HYBMPI_MPIRUN_OPTS=\"-np ${total_sckts} -npernode ${sckts}\"" >> "${qbatch}"
   else
-    threads=1
+    threads=${thrds}
     echo "export HYBMPI_MPIRUN_OPTS=\"-np ${slots} -npernode ${tasks}\""     >> "${qbatch}"
   fi
   # Intel MKL
