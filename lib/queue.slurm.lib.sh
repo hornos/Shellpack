@@ -12,11 +12,11 @@ function __SP_jobsub_slurm() {
   echo "#${pfx} --job-name ${NAME}"                  >> "${qbatch}"
 
   # mail
-  if ! test -z "${QUEUE_MAIL_TO}" ; then
-    echo "#${pfx} --mail-user=${QUEUE_MAIL_TO}"      >> "${qbatch}"
-  fi
-  if ! test -z "${QUEUE_MAIL}" ; then
+  if ! test -z "${QUEUE_MAIL}" && test "${QUEUE_MAIL}" != "runprg" ; then
     echo "#${pfx} --mail-type=${QUEUE_MAIL}"         >> "${qbatch}"
+    if ! test -z "${QUEUE_MAIL_TO}" ; then
+      echo "#${pfx} --mail-user=${QUEUE_MAIL_TO}"      >> "${qbatch}"
+    fi
   fi
 
   # time

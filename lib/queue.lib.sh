@@ -63,7 +63,12 @@ function __SP_jobsub() {
 
 # command -----------------------------------------------------------------------
   if ! test -z "${QUEUE_SETUP}" ; then
-    echo "${QUEUE_SETUP}"                     >> "${qbatch}"
+    echo "${QUEUE_SETUP}"                        >> "${qbatch}"
+  fi
+
+# mail --------------------------------------------------------------------------
+  if test "${QUEUE_MAIL}" = "runprg" ; then
+    echo "export QUEUE_MAIL_TO=${QUEUE_MAIL_TO}" >> "${qbatch}"
   fi
 
 # MPI ---------------------------------------------------------------------------

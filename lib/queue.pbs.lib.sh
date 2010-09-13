@@ -12,11 +12,11 @@ function __SP_jobsub_pbs() {
   echo "#${pfx} -N ${NAME}"                 >> "${qbatch}"
 
   # mail
-  if ! test -z "${QUEUE_MAIL_TO}" ; then
-    echo "#${pfx} -M ${QUEUE_MAIL_TO}"      >> "${qbatch}"
-  fi
-  if ! test -z "${QUEUE_MAIL}" ; then
+  if ! test -z "${QUEUE_MAIL}" && test "${QUEUE_MAIL}" != "runprg" ; then
     echo "#${pfx} -m ${QUEUE_MAIL}"         >> "${qbatch}"
+    if ! test -z "${QUEUE_MAIL_TO}" ; then
+      echo "#${pfx} -M ${QUEUE_MAIL_TO}"      >> "${qbatch}"
+    fi
   fi
 
   # time
