@@ -44,6 +44,11 @@ function __SP_jobsub_slurm() {
     done
   fi
 
+  # partition
+  if ! test -z "${QUEUE_PART}" ; then
+    echo "#${pfx} --partition=${QUEUE_PART}"  >> "${qbatch}"
+  fi
+
   # project
   if ! test -z "${QUEUE_PROJECT}" ; then
     echo "#${pfx} --account=${QUEUE_PROJECT}" >> "${qbatch}"
