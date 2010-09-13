@@ -49,7 +49,8 @@ function __SP_jobsub_slurm() {
     echo "#${pfx} --account=${QUEUE_PROJECT}" >> "${qbatch}"
   fi
 
-  echo "#${pfx} --output=${QUEUE_ERROUT:-ErrorOut}" >> "${qbatch}"
+  echo "#${pfx} -o ${QUEUE_STDOUT:-StdOut}"   >> "${qbatch}"
+  echo "#${pfx} -e ${QUEUE_ERROUT:-ErrOut}"   >> "${qbatch}"
 
   if ! test -z "${QUEUE_OPTS}" ; then
     echo "#${pfx} ${QUEUE_OPTS}"              >> "${qbatch}"
