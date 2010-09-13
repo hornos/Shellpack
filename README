@@ -13,8 +13,8 @@ ssh   : ssh login, scp, fuse sshfs mount
 
 run   : vasp, siesta, denchar
 
+queue : PBS, SGE, SLURM
 
 TODO:
 run   : espresso
 
-queue : PBE, SGE, SLURM

@@ -36,7 +36,7 @@ function __SP_jobsub() {
   echo "#!${shell}"      >  "${qbatch}"
   echo "## ${timestamp}" >> "${qbatch}"
 
-# MPI ---------------------------------------------------------------------------
+# MPI vars ----------------------------------------------------------------------
   local nodes=${NODES}
   local cores=${CORES}
   local cpus=${CPUS}
@@ -48,6 +48,25 @@ function __SP_jobsub() {
   SLOTS=${slots}
   TASKS=${tasks}
 
+# queue specific jobsub ---------------------------------------------------------
+  if test -z "${COMMAND}" ; then
+    errmsg "no command"
+    return 10
+  fi
+
+  if test -z "${NAME}" ; then
+    errmsg "no job name"
+    return 11
+  fi
+
+  __SP_jobsub_${queue} "${qbatch}"
+
+# command -----------------------------------------------------------------------
+  if ! test -z "${QUEUE_SETUP}" ; then
+    echo "${QUEUE_SETUP}"                     >> "${qbatch}"
+  fi
+
+# MPI ---------------------------------------------------------------------------
   if test "${HYBMPI}" = "on" ; then
     echo "export HYBMPI_MPIRUN_OPTS=\"-np ${total_cpus} -npernode ${cpus}\"" >> "${qbatch}"
   else
@@ -67,15 +86,7 @@ function __SP_jobsub() {
     echo "export KMP_LIBRARY=serial"       >> "${qbatch}"
   fi
 
-# queue specific jobsub ---------------------------------------------------------
-  __SP_jobsub_${queue} "${qbatch}"
-
-# command -----------------------------------------------------------------------
-  if ! test -z "${QUEUE_SETUP}" ; then
-    echo "${QUEUE_SETUP}"                     >> "${qbatch}"
-  fi
-
-  # for mail
+# mail --------------------------------------------------------------------------
   if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
     COMMAND="${COMMAND} -s ${QUEUE_TYPE}"
   fi

@@ -9,15 +9,6 @@
 function __SP_jobsub_sge() {
   local qbatch="${1}"
 
-  if test -z "${COMMAND}" ; then
-    errmsg "no command"
-    return 10
-  fi
-
-  if test -z "${NAME}" ; then
-    errmsg "no job name"
-    return 11
-  fi
   echo "#${pfx} -N ${NAME}"                  >> "${qbatch}"
   echo "#${pfx} -S ${QUEUE_SHELL:-${shell}}" >> "${qbatch}"
 

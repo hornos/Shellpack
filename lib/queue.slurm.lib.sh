@@ -9,15 +9,6 @@
 function __SP_jobsub_slurm() {
   local qbatch="${1}"
 
-  if test -z "${COMMAND}" ; then
-    errmsg "no command"
-    return 10
-  fi
-
-  if test -z "${NAME}" ; then
-    errmsg "no job name"
-    return 11
-  fi
   echo "#${pfx} --job-name ${NAME}"                  >> "${qbatch}"
 
   # mail
@@ -44,12 +35,8 @@ function __SP_jobsub_slurm() {
 
   if ! test -z "${TASKS}" ; then
       echo "#${pfx} --ntasks-per-node=${TASKS}"      >> "${qbatch}"  
-  else
-    if ! test -z "${CORES}" ; then
-      echo "#${pfx} --ntasks-per-node=${CORES}"      >> "${qbatch}"
-    fi
   fi
-  
+
   # other constraints
   if ! test -z "${QUEUE_CONST}" ; then
     for con in ${QUEUE_CONST} ; do
@@ -79,9 +66,6 @@ function __mail_msg() {
   msg=$(date)
   if ! test -z "${SLURM_JOB_NUM_NODES}" ; then
     echo "${msg}\nRunning on ${SLURM_JOB_NUM_NODES} nodes"
-    if ! test -z "${SLURM_NTASKS_PER_NODE}" ; then
-      echo "Running on ${SLURM_NTASKS_PER_NODE} cores per node"
-    fi 
   else
     echo "${msg}"
   fi
