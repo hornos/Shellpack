@@ -1,7 +1,6 @@
 QUEUE_TYPE="slurm"
 QUEUE_MAIL_TO="email"
 QUEUE_MAIL="ALL"
-QUEUE_ERROUT="ErrorOut"
 QUEUE_PROJECT="projectno"
 QUEUE_CONST="amd ib"
 QUEUE_SETUP="source /path/to/jobsetup"

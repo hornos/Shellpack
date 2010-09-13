@@ -1,7 +1,6 @@
 QUEUE_TYPE="sge"
 QUEUE_MAIL_TO="email"
 QUEUE_MAIL="abe"
-QUEUE_ERROUT="ErrorOut"
 QUEUE_QUEUE="sge.q"
 QUEUE_PE="pe_mpi"
 QUEUE_ARCH="lx24-amd64"
