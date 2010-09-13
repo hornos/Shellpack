@@ -225,12 +225,13 @@ function __SP_runprg() {
     program="${program} ${PARAMS}"
   fi
 
+# start running -----------------------------------------------------------------
+  __send_mail "Started"
 
   echo
   prnsln
   echo "Running:"
   echo "${program}"
-  __send_mail "Started"
 
   __isrdrc ${MAININPUT}
   ret=$?
@@ -308,6 +309,7 @@ function __mail() {
   echo "Sending mail:"
   echo "${mto}"
   echo -e "${msg}" | ${mail} -s "${sub}" "${mto}"
+  sleep 5
 }
 
 

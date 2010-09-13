@@ -105,5 +105,6 @@ function __SP_jobsub() {
   if test $ret -gt 0 ; then
     return $ret
   fi
+  echo
   ${submit} "${qbatch}"
 }
