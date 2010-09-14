@@ -83,7 +83,8 @@ function __SP_jobsub() {
   # Intel MKL
   echo "export OMP_NUM_THREADS=${threads}" >> "${qbatch}"
   echo "export MKL_NUM_THREADS=${threads}" >> "${qbatch}"
-  echo "export MKL_DYNAMIC=FALSE"          >> "${qbatch}"
+  # echo "export MKL_DYNAMIC=FALSE"          >> "${qbatch}"
+  echo "export MKL_DYNAMIC=TRUE"           >> "${qbatch}"
   if test ${threads} -gt 1 ; then
     echo "export KMP_LIBRARY=turnaround"   >> "${qbatch}"
     # echo "export KMP_AFFINITY=granularity=core,compact,0,0"   >> "${qbatch}"
