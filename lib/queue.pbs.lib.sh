@@ -51,7 +51,7 @@ function __SP_jobsub_pbs() {
     echo "#${pfx} -A ${QUEUE_PROJECT}"              >> "${qbatch}"
   fi
 
-  if test "${QUEUE_SHARE}" = "off" ; then
+  if test "${QUEUE_SHARE}" = "off" ; then
     echo "#${pfx} -W x=NACCESSPOLICY:SINGLEUSER"    >> "${qbatch}"
   fi
 
