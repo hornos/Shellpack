@@ -54,6 +54,11 @@ function __SP_jobsub_slurm() {
     echo "#${pfx} --account=${QUEUE_PROJECT}" >> "${qbatch}"
   fi
 
+  # exclusive?
+  if test "${QUEUE_SHARE}" = "off" ; then
+    echo "#${pfx} --exclusive"                >> "${qbatch}"
+  fi
+
   echo "#${pfx} -o ${QUEUE_STDOUT:-StdOut}"   >> "${qbatch}"
   echo "#${pfx} -e ${QUEUE_ERROUT:-ErrOut}"   >> "${qbatch}"
 
